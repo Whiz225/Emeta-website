@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="PiiChat - Real-time messaging, voice and video calls, social posts, and virtual gifting."
+    />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header-inner">
+        <a href="/" class="logo">
+          <!-- App icon image -->
+          <img src="/icon.png" alt="PiiChat" class="logo-img" />
+          <span class="logo-text">PiiChat</span>
+        </a>
+        <nav class="nav">
+          <a href="/" class="{{#if isHome}}active{{/if}}">Home</a>
+          <a href="/about" class="{{#if isAbout}}active{{/if}}">About</a>
+          <a href="/privacy" class="{{#if isPrivacy}}active{{/if}}">Privacy</a>
+          <a href="/terms" class="{{#if isTerms}}active{{/if}}">Terms</a>
+          <a
+            href="/delete-account"
+            class="btn-small {{#if isDelete}}active{{/if}}"
+            >Delete Account</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main>{{{body}}}</main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div>
+          <p class="footer-brand">PiiChat by Emeta</p>
+          <p class="footer-desc">Connect. Chat. Share.</p>
+        </div>
+        <div class="footer-links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms & Conditions</a>
+          <a href="/delete-account">Delete Account</a>
+          <a href="/about">About</a>
+        </div>
+        <div class="footer-contact">
+          <p>
+            Contact:
+            <a href="mailto:nwosuemmanuel1994@gmail.com"
+              >nwosuemmanuel1994@gmail.com</a
+            >
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Emeta. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>
