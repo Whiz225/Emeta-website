@@ -54,7 +54,35 @@
     </div>
   </div>
 </section>
-
+{{#if stats}}
+<section class="stats">
+  <div class="container">
+    <h2>PiiChat in Numbers</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{formatNumber stats.totalUsers}}</div>
+        <div class="stat-label">Total Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{formatNumber stats.activeCommunities}}</div>
+        <div class="stat-label">Active Communities</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{formatNumber stats.totalPosts}}</div>
+        <div class="stat-label">Posts Shared</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{formatNumber stats.totalCountries}}</div>
+        <div class="stat-label">Countries</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{formatNumber stats.newUsersToday}}</div>
+        <div class="stat-label">Joined Today</div>
+      </div>
+    </div>
+  </div>
+</section>
+{{/if}}
 <section class="cta">
   <div class="container">
     <h2>Coming Soon to Google Play</h2>
