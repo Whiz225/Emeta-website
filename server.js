@@ -10,7 +10,10 @@ const fetchFn = global.fetch || require("node-fetch");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const API_BASE = process.env.API_BASE || "http://localhost:9000";
+const API_BASE =
+  process.env.API_BASE ||
+  "https://dating-app-api-1-3zzv.onrender.com" ||
+  "http://localhost:9000";
 
 // ── Handlebars ───────────────────────────────
 app.engine(
@@ -75,6 +78,13 @@ app.get("/", async (req, res) => {
     title: "PiiChat - Connect, Chat, Share",
     isHome: true,
     stats,
+  });
+});
+
+app.get("/community-guide", (req, res) => {
+  res.render("community-guide", {
+    title: "Community Guide - PiiChat",
+    isCommunityGuide: true,
   });
 });
 
