@@ -8,8 +8,62 @@
       content="PiiChat - Real-time messaging, voice and video calls, social posts, and virtual gifting."
     />
     <title>{{title}}</title>
+
+    <!-- ============================================================ -->
+    <!-- OPEN GRAPH / SOCIAL PREVIEW TAGS                              -->
+    <!-- These make the link render with an image + title in WhatsApp, -->
+    <!-- iMessage, Facebook, Twitter/X, Telegram, LinkedIn, etc.       -->
+    <!-- ============================================================ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PiiChat" />
+    <meta property="og:url" content="https://emeta-website.onrender.com" />
+    <meta
+      property="og:title"
+      content="PiiChat — Secure Messaging, Calls & Gifting"
+    />
+    <meta
+      property="og:description"
+      content="Join me on PiiChat for encrypted, real-time messaging, voice & video calls, social posts, and virtual gifting. Download now!"
+    />
+    <meta
+      property="og:image"
+      content="https://emeta-website.onrender.com/icon.png"
+    />
+    <meta property="og:image:alt" content="PiiChat app icon" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@piichat" />
+    <meta
+      name="twitter:title"
+      content="PiiChat — Secure Messaging, Calls & Gifting"
+    />
+    <meta
+      name="twitter:description"
+      content="Join me on PiiChat for encrypted, real-time messaging, voice & video calls, social posts, and virtual gifting."
+    />
+    <meta
+      name="twitter:image"
+      content="https://emeta-website.onrender.com/icon.png"
+    />
+
+    <!-- WhatsApp / iMessage specific (still uses OG above, but this helps) -->
+    <meta itemprop="image" content="https://emeta-website.onrender.com/icon.png" />
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#6366f1" />
+
     <link rel="stylesheet" href="/style.css" />
     <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+
+    <!-- ============================================================ -->
+    <!-- APP STORE / PLAY STORE DEEP LINKS                             -->
+    <!-- Optional: helps iOS Smart App Banner & Android intent         -->
+    <!-- ============================================================ -->
+    <meta name="apple-itunes-app" content="app-id=123456789" />
   </head>
   <body>
     <header class="header">
@@ -59,11 +113,23 @@
             >
           </p>
           <div class="store-links">
-            <a href="#" class="store-link" data-store="android">
+            <a
+              href="https://play.google.com/store/apps/details?id=com.piichat.app"
+              class="store-link"
+              data-store="android"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <span>Get it on</span>
               <strong>Google Play</strong>
             </a>
-            <a href="#" class="store-link" data-store="ios">
+            <a
+              href="https://apps.apple.com/app/piichat/id123456789"
+              class="store-link"
+              data-store="ios"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <span>Download on the</span>
               <strong>App Store</strong>
             </a>
