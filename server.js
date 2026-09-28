@@ -10,10 +10,7 @@ const fetchFn = global.fetch || require("node-fetch");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const API_BASE =
-  process.env.API_BASE ||
-  "https://dating-app-api-1-3zzv.onrender.com" ||
-  "http://localhost:9000";
+const API_BASE = process.env.API_BASE;
 
 // ── Handlebars ───────────────────────────────
 app.engine(
@@ -27,6 +24,9 @@ app.engine(
       formatNumber(n) {
         if (n === undefined || n === null || isNaN(n)) return "0";
         return Number(n).toLocaleString("en-US");
+      },
+      eq(a, b) {
+        return a === b;
       },
     },
   })
@@ -88,6 +88,189 @@ app.get("/community-guide", (req, res) => {
   });
 });
 
+// server.js (website) — update the /verify route
+
+// ============================================================
+// VERIFY PAGE
+// ============================================================
+app.get("/verify", async (req, res) => {
+  const { uid, t, userId, emailToken } = req.query;
+  const resolvedUserId = uid || userId;
+  const resolvedToken = t || emailToken;
+
+  if (!resolvedUserId) {
+    return res.render("verify", {
+      title: "Verification - PiiChat",
+      isVerify: true,
+      step: "error",
+      errorMessage: "Missing verification parameters.",
+      userId: null,
+      userFullName: null,
+      userPhone: null,
+      userEmail: null,
+      emailVerified: false,
+      phoneVerified: false,
+      deepLink: null,
+    });
+  }
+
+  let emailVerified = false;
+  let phoneVerified = false;
+  let userFullName = null;
+  let userPhone = null;
+  let userEmail = null;
+  let errorMessage = null;
+  let step = "error";
+
+  if (resolvedToken === "verified" || resolvedToken === "phone_pending") {
+    // Just read status
+    try {
+      const statusRes = await fetchFn(
+        `${API_BASE}/api/verification/status?uid=${encodeURIComponent(
+          resolvedUserId
+        )}`
+      );
+      const data = await statusRes.json();
+      if (statusRes.ok && data?.status === "success") {
+        emailVerified = data.data.emailVerified;
+        phoneVerified = data.data.phoneVerified;
+        userFullName = data.data.userFullName;
+        userPhone = data.data.userPhone;
+        userEmail = data.data.userEmail;
+
+        if (phoneVerified) {
+          step = "done";
+        } else if (emailVerified) {
+          // Check if phone verification is pending
+          if (
+            resolvedToken === "phone_pending" ||
+            data.data.phoneVerificationPending
+          ) {
+            step = "phone";
+          } else {
+            step = "email_done";
+          }
+        } else {
+          step = "error";
+          errorMessage = "Email not verified.";
+        }
+      } else {
+        step = "error";
+        errorMessage = data?.message || "Could not read status.";
+      }
+    } catch (err) {
+      step = "error";
+      errorMessage = "Could not read status.";
+    }
+  } else {
+    // Verify email with token
+    try {
+      const apiRes = await fetchFn(
+        `${API_BASE}/api/verification/verify-email` +
+          `?uid=${encodeURIComponent(resolvedUserId)}` +
+          `&t=${encodeURIComponent(resolvedToken)}`
+      );
+      const data = await apiRes.json();
+
+      if (apiRes.ok && data?.status === "success") {
+        emailVerified = true;
+        userFullName = data.data.userFullName;
+        userPhone = data.data.userPhone;
+        userEmail = data.data.userEmail;
+        phoneVerified = data.data.phoneVerified;
+
+        if (phoneVerified) {
+          step = "done";
+        } else {
+          step = "email_done"; // ✅ Show "request phone verification" button
+        }
+      } else {
+        errorMessage =
+          data?.message || "Verification link is invalid or has expired.";
+        step = "error";
+      }
+    } catch (err) {
+      console.error("Verify API call failed:", err.message);
+      errorMessage = "We couldn't reach the verification server.";
+      step = "error";
+    }
+  }
+
+  res.render("verify", {
+    title: "Verify your PiiChat account",
+    isVerify: true,
+    step,
+    errorMessage,
+    userId: resolvedUserId,
+    userFullName,
+    userPhone,
+    userEmail,
+    emailVerified,
+    phoneVerified,
+    deepLink: "piichat://verify-email?status=success",
+  });
+});
+
+// ============================================================
+// REQUEST PHONE VERIFICATION — called from verify page
+// ============================================================
+app.post("/request-phone-verification", express.json(), async (req, res) => {
+  const { userId, phone } = req.body || {};
+  if (!userId) {
+    return res.status(400).json({ status: "error", message: "Missing userId" });
+  }
+
+  try {
+    const apiRes = await fetchFn(`${API_BASE}/api/verification/request-phone`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, phone }),
+    });
+    const data = await apiRes.json();
+    res.status(apiRes.status).json(data);
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to request phone verification. Try again.",
+    });
+  }
+});
+
+// ============================================================
+// VERIFY PHONE — browser form POST → API
+// ============================================================
+app.post(
+  "/verify-phone",
+  express.urlencoded({ extended: true }),
+  express.json(),
+  async (req, res) => {
+    const { phone, code } = req.body || {};
+    if (!phone || !code) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Missing phone or code" });
+    }
+
+    try {
+      const apiRes = await fetchFn(
+        `${API_BASE}/api/verification/verify-phone`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, code }),
+        }
+      );
+      const data = await apiRes.json();
+      res.status(apiRes.status).json(data);
+    } catch (err) {
+      res.status(500).json({
+        status: "error",
+        message: "Failed to verify phone. Try again.",
+      });
+    }
+  }
+);
+
 app.get("/about", (req, res) => {
   res.render("about", { title: "About - PiiChat", isAbout: true });
 });
@@ -119,6 +302,6 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 PiiChat website running at http://localhost:${PORT}`);
+  console.log(`🚀 PiiChat website running at {API_BASE}:${PORT}`);
   console.log(`📡 Using API base: ${API_BASE}`);
 });

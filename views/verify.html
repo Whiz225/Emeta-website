@@ -1,0 +1,458 @@
+<!-- views/verify.html -->
+<style>
+  .v-wrap {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .v-card {
+    max-width: 560px;
+    width: 100%;
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 20px;
+    padding: 40px 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    color: #e5e7eb;
+  }
+  .v-icon {
+    font-size: 64px;
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+  .v-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin: 0 0 8px;
+  }
+  .v-sub {
+    color: #9ca3af;
+    font-size: 15px;
+    text-align: center;
+    margin: 0 0 24px;
+    line-height: 1.6;
+  }
+
+  .v-user {
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .v-user-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+  .v-user-label {
+    color: #9ca3af;
+  }
+  .v-user-value {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .v-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .v-step.done {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+  .v-step.pending {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+  .v-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .v-badge.done {
+    background: #22c55e;
+    color: #fff;
+  }
+  .v-badge.pending {
+    background: #f59e0b;
+    color: #fff;
+  }
+  .v-step-text {
+    font-size: 14px;
+    flex: 1;
+    color: #e5e7eb;
+  }
+  .v-step-text strong {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+  .v-step-text small {
+    color: #9ca3af;
+  }
+
+  .v-input {
+    width: 100%;
+    padding: 18px;
+    background: #0f172a;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 24px;
+    letter-spacing: 8px;
+    text-align: center;
+    font-family: "Courier New", monospace;
+    font-weight: 700;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 12px;
+  }
+  .v-input:focus {
+    border-color: #3b82f6;
+  }
+  .v-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 12px;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: background 0.15s ease;
+  }
+  .v-btn-primary {
+    background: #3b82f6;
+    color: #fff;
+  }
+  .v-btn-primary:hover {
+    background: #2563eb;
+  }
+  .v-btn-primary:disabled {
+    background: #4b5563;
+    cursor: not-allowed;
+  }
+  .v-btn-success {
+    background: #22c55e;
+    color: #fff;
+  }
+  .v-btn-success:hover {
+    background: #16a34a;
+  }
+  .v-btn-warning {
+    background: #f59e0b;
+    color: #fff;
+  }
+  .v-btn-warning:hover {
+    background: #d97706;
+  }
+  .v-btn-warning:disabled {
+    background: #78350f;
+    cursor: not-allowed;
+  }
+  .v-err {
+    color: #fca5a5;
+    font-size: 13px;
+    text-align: center;
+    min-height: 18px;
+    margin-top: 8px;
+  }
+  .v-note {
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .v-label {
+    color: #d1d5db;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 12px 0 6px;
+  }
+  .v-tip {
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .v-tip-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .v-tip-text {
+    color: #fde68a;
+    font-size: 13px;
+    line-height: 1.5;
+    flex: 1;
+  }
+</style>
+
+<div class="v-wrap">
+  <div class="v-card">
+    {{#if (eq step "error")}}
+    <div class="v-icon">⚠️</div>
+    <h1 class="v-title">Verification Error</h1>
+    <p class="v-sub">{{errorMessage}}</p>
+    {{/if}} {{#if (eq step "email_done")}}
+    <div class="v-icon">✅</div>
+    <h1 class="v-title">Email Verified!</h1>
+    <p class="v-sub">
+      Your email has been verified successfully. Now let's verify your phone.
+    </p>
+
+    <div class="v-user">
+      <div class="v-user-row">
+        <span class="v-user-label">Name</span>
+        <span class="v-user-value">{{userFullName}}</span>
+      </div>
+      <div class="v-user-row">
+        <span class="v-user-label">Email</span>
+        <span class="v-user-value">{{userEmail}}</span>
+      </div>
+      <div class="v-user-row">
+        <span class="v-user-label">Phone</span>
+        <span class="v-user-value">{{userPhone}}</span>
+      </div>
+    </div>
+
+    <div class="v-step done">
+      <div class="v-badge done">✓</div>
+      <div class="v-step-text">
+        <strong>Email verified</strong>
+        <small>Confirmed.</small>
+      </div>
+    </div>
+
+    <div class="v-step pending">
+      <div class="v-badge pending">2</div>
+      <div class="v-step-text">
+        <strong>Verify your phone</strong>
+        <small>Click below to request a verification code.</small>
+      </div>
+    </div>
+
+    <button id="v-request-phone" class="v-btn v-btn-warning" type="button">
+      Request Phone Verification
+    </button>
+    <div id="v-err" class="v-err"></div>
+
+    <p class="v-note">
+      We'll send a 6-digit code to your WhatsApp. After entering the code,
+      you're all set!
+    </p>
+
+    <script>
+      (function () {
+        const btn = document.getElementById("v-request-phone");
+        const errEl = document.getElementById("v-err");
+        const userId = "{{userId}}";
+        const userPhone = "{{userPhone}}";
+
+        btn.addEventListener("click", async function () {
+          btn.disabled = true;
+          btn.textContent = "Requesting…";
+          errEl.textContent = "";
+
+          try {
+            const res = await fetch("/request-phone-verification", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId, phone: userPhone }),
+            });
+            const data = await res.json();
+
+            if (res.ok && data?.status === "success") {
+              window.location.href =
+                "/verify?uid=" +
+                encodeURIComponent(userId) +
+                "&t=phone_pending";
+            } else {
+              errEl.textContent = data?.message || "Failed to request code.";
+              btn.disabled = false;
+              btn.textContent = "Request Phone Verification";
+            }
+          } catch (err) {
+            errEl.textContent = "Network error. Try again.";
+            btn.disabled = false;
+            btn.textContent = "Request Phone Verification";
+          }
+        });
+      })();
+    </script>
+    {{/if}} {{#if (eq step "phone")}}
+    <div class="v-icon">📱</div>
+    <h1 class="v-title">Verify Your Phone</h1>
+    <p class="v-sub">Enter the 6-digit code we sent to your WhatsApp.</p>
+
+    <div class="v-user">
+      <div class="v-user-row">
+        <span class="v-user-label">Name</span>
+        <span class="v-user-value">{{userFullName}}</span>
+      </div>
+      <div class="v-user-row">
+        <span class="v-user-label">Phone</span>
+        <span class="v-user-value">{{userPhone}}</span>
+      </div>
+    </div>
+
+    <div class="v-step done">
+      <div class="v-badge done">✓</div>
+      <div class="v-step-text">
+        <strong>Email verified</strong>
+        <small>Confirmed.</small>
+      </div>
+    </div>
+
+    <div class="v-step pending">
+      <div class="v-badge pending">2</div>
+      <div class="v-step-text">
+        <strong>Enter your phone code</strong>
+        <small>We sent you a 6-digit code on WhatsApp.</small>
+      </div>
+    </div>
+
+    <div class="v-label">Phone code</div>
+    <input
+      id="v-input"
+      class="v-input"
+      type="text"
+      inputmode="numeric"
+      maxlength="6"
+      placeholder="······"
+      autocomplete="one-time-code"
+    />
+    <button id="v-submit" class="v-btn v-btn-primary" type="button">
+      Verify Phone
+    </button>
+    <div id="v-err" class="v-err"></div>
+
+    <p class="v-note">
+      The code is valid for 30 minutes. If it expires, request a new one.
+    </p>
+
+    <script>
+      (function () {
+        const input = document.getElementById("v-input");
+        const submit = document.getElementById("v-submit");
+        const errEl = document.getElementById("v-err");
+        const phoneRaw = "{{userPhone}}";
+        const userId = "{{userId}}";
+
+        input.addEventListener("input", function (e) {
+          e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6);
+        });
+
+        submit.addEventListener("click", async function () {
+          const value = input.value.trim();
+          if (value.length !== 6) {
+            errEl.textContent = "Please enter the 6-digit code.";
+            return;
+          }
+          submit.disabled = true;
+          submit.textContent = "Verifying…";
+          errEl.textContent = "";
+
+          try {
+            const res = await fetch("/verify-phone", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ phone: phoneRaw, code: value }),
+            });
+            const data = await res.json();
+
+            if (res.ok && data?.status === "success") {
+              window.location.href =
+                "/verify?uid=" + encodeURIComponent(userId) + "&t=verified";
+            } else {
+              errEl.textContent = data?.message || "Invalid code. Try again.";
+              submit.disabled = false;
+              submit.textContent = "Verify Phone";
+            }
+          } catch (err) {
+            errEl.textContent = "Network error. Try again.";
+            submit.disabled = false;
+            submit.textContent = "Verify Phone";
+          }
+        });
+      })();
+    </script>
+    {{/if}} {{#if (eq step "done")}}
+    <div class="v-icon">🎉</div>
+    <h1 class="v-title">All Set!</h1>
+    <p class="v-sub">
+      Your email and phone are verified. You can now use PiiChat!
+    </p>
+
+    <div class="v-user">
+      <div class="v-user-row">
+        <span class="v-user-label">Name</span>
+        <span class="v-user-value">{{userFullName}}</span>
+      </div>
+      <div class="v-user-row">
+        <span class="v-user-label">Email</span>
+        <span class="v-user-value">{{userEmail}}</span>
+      </div>
+      <div class="v-user-row">
+        <span class="v-user-label">Phone</span>
+        <span class="v-user-value">{{userPhone}}</span>
+      </div>
+    </div>
+
+    <div class="v-step done">
+      <div class="v-badge done">✓</div>
+      <div class="v-step-text">
+        <strong>Email verified</strong>
+        <small>Confirmed.</small>
+      </div>
+    </div>
+
+    <div class="v-step done">
+      <div class="v-badge done">✓</div>
+      <div class="v-step-text">
+        <strong>Phone verified</strong>
+        <small>Confirmed.</small>
+      </div>
+    </div>
+
+    <a href="{{deepLink}}" class="v-btn v-btn-success"> Open PiiChat </a>
+
+    <div class="v-tip">
+      <span class="v-tip-icon">💡</span>
+      <span class="v-tip-text">
+        <strong>Important:</strong> If the app doesn't update immediately,
+        completely close the app and reopen it. This ensures your verification
+        status is properly synced.
+      </span>
+    </div>
+    {{/if}}
+  </div>
+</div>
